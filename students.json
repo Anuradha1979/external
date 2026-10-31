@@ -1,0 +1,16 @@
+[
+  {
+    "roll": "1",
+    "name": "Anu",
+    "year": "2",
+    "branch": "CSE",
+    "cgpa": "8.5"
+  },
+  {
+    "roll": "4",
+    "name": "mini",
+    "branch": "csm",
+    "cgpa": "9.4"
+  },
+  {}
+]

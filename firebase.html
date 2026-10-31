@@ -1,0 +1,145 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Firebase Database</title>
+</head>
+<body>
+    <h2>Student Management</h2>
+
+    Enter Name:
+    <input type="text" id="name"><br><br>
+
+    Enter Roll No:
+    <input type="text" id="rollno"><br><br>
+
+    Enter Branch:
+    <input type="text" id="branch"><br><br>
+
+    Enter CGPA:
+    <input type="text" id="cgpa"><br><br>
+
+    <input type="button" value="Insert" id="b1">
+    <input type="button" value="Update" id="b2">
+    <input type="button" value="Delete" id="b3">
+    <input type="button" value="Display" id="b4">
+
+    <p id="result"></p>
+
+    <script type="module">
+        import { initializeApp } from
+        "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+
+        import {
+            getDatabase, ref, set, get, remove, update, child
+        } from
+        "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "student-e313e.firebaseapp.com",
+            databaseURL: "https://student-e313e-default-rtdb.firebaseio.com",
+            projectId: "student-e313e",
+            storageBucket: "student-e313e.firebasestorage.app",
+            messagingSenderId: "130144118738",
+            appId: "1:130144118738:web:8f62cfb7d24d88c6d20a0b",
+            measurementId: "G-W9611EK4GP"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const dbRef = ref(db);
+
+        document.getElementById("b1").addEventListener("click", insertData);
+        document.getElementById("b2").addEventListener("click", updateData);
+        document.getElementById("b3").addEventListener("click", deleteData);
+        document.getElementById("b4").addEventListener("click", displayData);
+
+        function insertData() {
+            const r = document.getElementById("rollno").value.trim();
+            const n = document.getElementById("name").value;
+            const b = document.getElementById("branch").value;
+            const c = document.getElementById("cgpa").value;
+
+            if (!r) {
+                alert("Enter roll number");
+                return;
+            }
+
+            const ob = {
+                name: n,
+                branch: b,
+                cgpa: Number(c)
+            };
+
+            set(ref(db, "student/" + r), ob)
+                .then(() => alert("Data inserted successfully"))
+                .catch(error => alert(error.message));
+        }
+
+        function updateData() {
+            const r = document.getElementById("rollno").value.trim();
+            const n = document.getElementById("name").value;
+            const b = document.getElementById("branch").value;
+            const c = document.getElementById("cgpa").value;
+
+            if (!r) {
+                alert("Enter roll number");
+                return;
+            }
+
+            const ob = {
+                name: n,
+                branch: b,
+                cgpa: Number(c)
+            };
+
+            update(ref(db, "student/" + r), ob)
+                .then(() => alert("Data updated successfully"))
+                .catch(error => alert(error.message));
+        }
+
+        function deleteData() {
+            const r = document.getElementById("rollno").value.trim();
+
+            if (!r) {
+                alert("Enter roll number");
+                return;
+            }
+
+            remove(ref(db, "student/" + r))
+                .then(() => alert("Data deleted successfully"))
+                .catch(error => alert(error.message));
+        }
+
+        function displayData() {
+            const r = document.getElementById("rollno").value.trim();
+
+            if (!r) {
+                alert("Enter roll number");
+                return;
+            }
+
+            get(child(dbRef, "student/" + r))
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
+
+                        document.getElementById("name").value = data.name || "";
+                        document.getElementById("branch").value = data.branch || "";
+                        document.getElementById("cgpa").value = data.cgpa ?? "";
+
+                        document.getElementById("result").innerText =
+                            "Name: " + data.name +
+                            ", Branch: " + data.branch +
+                            ", CGPA: " + data.cgpa;
+                    } else {
+                        document.getElementById("result").innerText =
+                            "No student found";
+                    }
+                })
+                .catch(error => alert(error.message));
+        }
+    </script>
+</body>
+</html>
